@@ -3,12 +3,42 @@
 // Track tabs we trigger a redirect on to prevent redirect loops.
 const redirectingTabs = new Set();
 
+// Extendable list of tracking params to strip.
+// - prefixes match keys starting with the value (e.g., "utm_" removes utm_source, utm_medium, etc.)
+// - exact matches remove a specific key.
+const TRACKING_PARAM_PREFIXES = ["utm_", "icid", "mc_", "mkt_", "oly_", "hsa_"];
+const TRACKING_PARAM_KEYS = [
+  "fbclid",
+  "gclid",
+  "msclkid",
+  "igshid",
+  "yclid",
+  "dclid",
+  "gbraid",
+  "wbraid",
+  "mc_cid",
+  "mc_eid",
+  "pk_campaign",
+  "pk_source",
+  "pk_medium",
+  "pk_content",
+  "pk_kwd",
+  "vero_id"
+];
+
 function shouldIgnore(url) {
   return (
     !url ||
     url.startsWith("chrome://") ||
     url.startsWith("chrome-extension://") ||
     url.startsWith("edge://")
+  );
+}
+
+function isTrackingParam(keyLower) {
+  return (
+    TRACKING_PARAM_KEYS.includes(keyLower) ||
+    TRACKING_PARAM_PREFIXES.some((prefix) => keyLower.startsWith(prefix))
   );
 }
 
@@ -19,7 +49,8 @@ function sanitizeUrl(rawUrl) {
     let changed = false;
 
     for (const key of Array.from(params.keys())) {
-      if (key.toLowerCase().startsWith("utm_")) {
+      const keyLower = key.toLowerCase();
+      if (isTrackingParam(keyLower)) {
         params.delete(key);
         changed = true;
       }
