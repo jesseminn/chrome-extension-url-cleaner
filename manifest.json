@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "URL Cleaner - Remove UTM",
+  "version": "1.0.0",
+  "description": "Automatically removes utm_* tracking parameters when you navigate to a page.",
+  "permissions": ["tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "URL Cleaner"
+  }
+}
