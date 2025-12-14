@@ -18,6 +18,7 @@ const TRACKING_PARAM_KEYS = [
   "wbraid",
   "mc_cid",
   "mc_eid",
+  "ck_subscriber_id",
   "pk_campaign",
   "pk_source",
   "pk_medium",
